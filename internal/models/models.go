@@ -1,10 +1,4 @@
-package handlers
-
-import "github.com/tyagnii/gw-currency-wallet/internal/db"
-
-type Handler struct {
-	dbconn db.DBConnector
-}
+package models
 
 type User struct {
 	Username string `json:"username"`
