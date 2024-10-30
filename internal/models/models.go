@@ -1,5 +1,11 @@
 package handlers
 
+import "github.com/tyagnii/gw-currency-wallet/internal/db"
+
+type Handler struct {
+	dbconn db.DBConnector
+}
+
 type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -13,10 +19,10 @@ type Currency struct {
 }
 
 type Wallet struct {
-	Message string   `jsong:"message"`
+	Message string   `json:"message"`
 	Balance Currency `json:"balance"`
 }
 
 type Rates struct {
-	Rates Currency `jsong:"rates"`
+	Rates Currency `json:"rates"`
 }
