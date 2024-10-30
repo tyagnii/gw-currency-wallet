@@ -7,7 +7,7 @@ import (
 )
 
 type PGConnector struct {
-	pgconn *pgx.Conn
+	PGConn *pgx.Conn
 	ctx    context.Context
 }
 
@@ -16,7 +16,11 @@ func NewPGConnector(ctx context.Context, connectionString string) (*PGConnector,
 	if err != nil {
 		return nil, err
 	}
-	return &PGConnector{pgconn: conn, ctx: ctx}, nil
+	return &PGConnector{PGConn: conn, ctx: ctx}, nil
+}
+
+func (p *PGConnector) CreateUser(ctx context.Context, user models.User) error {
+	return nil
 }
 
 func (p *PGConnector) GetUser(ctx context.Context, u models.User) (models.User, error) {

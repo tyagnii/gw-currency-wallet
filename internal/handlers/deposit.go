@@ -2,4 +2,4 @@ package handlers
 
 import "github.com/gin-gonic/gin"
 
-func Deposit(c *gin.Context) {}
+func (h *Handler) Deposit(c *gin.Context) {}

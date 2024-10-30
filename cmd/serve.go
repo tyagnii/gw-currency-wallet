@@ -1,11 +1,13 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"github.com/tyagnii/gw-currency-wallet/config"
+	"github.com/tyagnii/gw-currency-wallet/internal/handlers"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -22,6 +24,24 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("serve called")
+
+		// read config.env
+		err := config.ReadConfig("config.env")
+		if err != nil {
+			os.Exit(1)
+		}
+
+		r, err := handlers.NewRouter()
+		if err != nil {
+			// todo: skip db connection error
+			// 		but panic on the other errors
+			fmt.Println(err)
+		}
+
+		err = r.Run()
+		if err != nil {
+			fmt.Println(err)
+		}
 	},
 }
 
