@@ -25,7 +25,7 @@ func (h *Handler) Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := h.dbconn.CreateUser(c, u); err.Error != nil {
+	if err := h.dbconn.CreateUser(c, u); err != nil {
 		c.JSON(http.StatusBadRequest, registerError)
 		return
 	}

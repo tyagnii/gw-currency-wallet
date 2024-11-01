@@ -25,9 +25,15 @@ func (p *PGConnector) CreateUser(ctx context.Context, user models.User) error {
 		return err
 	}
 
+	w := models.Wallet{UUID: UUID}
+
+	if err = p.CreateWallet(ctx, w); err != nil {
+		return err
+	}
+
 	_, err = p.PGConn.Exec(p.ctx,
-		`INSERT INTO users(name,email,wallet_id)  values($1,$2,$3)`,
-		user.Username, user.Email, UUID)
+		`INSERT INTO users(username, password, email, wallet_id) values($1,$2,$3,$4)`,
+		user.Username, user.Password, user.Email, UUID)
 	if err != nil {
 		return err
 	}
