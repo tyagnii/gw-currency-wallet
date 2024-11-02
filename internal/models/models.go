@@ -20,6 +20,17 @@ type Wallet struct {
 	Balance Currency `json:"balance"`
 }
 
+type DepositReq struct {
+	Amount   float32 `json:"amount"`
+	Currency string  `json:"currency"`
+}
+
+type ExchangeReq struct {
+	FromCurrency string  `json:"from_currency"`
+	ToCurrency   string  `json:"to_currency"`
+	Amount       float32 `json:"amount"`
+}
+
 type Rates struct {
 	Rates Currency `json:"rates"`
 }
