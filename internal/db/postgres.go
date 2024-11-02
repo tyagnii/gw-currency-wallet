@@ -91,3 +91,21 @@ func (p *PGConnector) Withdraw(ctx context.Context, w models.Wallet) error {
 
 	return nil
 }
+
+func (p *PGConnector) GetWalletByUsername(ctx context.Context, username string) (models.Wallet, error) {
+	var w models.Wallet
+	r, err := p.PGConn.Query(ctx,
+		`SELECT wallets.UUID, wallets.balanceRUB, wallets.balanceUSD, wallets.balanceEUR
+			FROM wallets
+			WHERE username = $1
+			JOIN users
+         	ON wallets.uuid = users.wallets_uuid`, username)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+
+	err = r.Scan(&w.UUID, &w.Balance.RUB, &w.Balance.USD, &w.Balance.EUR)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+}
