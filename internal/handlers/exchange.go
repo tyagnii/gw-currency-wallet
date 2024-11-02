@@ -19,7 +19,7 @@ import (
 //	@Router       /api/v1/exchange [post]
 func (h *Handler) Exchange(c *gin.Context) {
 	var exchange models.ExchangeReq
-	var wallet models.Wallet
+	//var wallet models.Wallet
 
 	if err := c.BindJSON(&exchange); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -28,5 +28,5 @@ func (h *Handler) Exchange(c *gin.Context) {
 	// TODO: get rates for exchange
 	// 		check balance before withdraw
 	// 		swithching between currencies ???
-	
+
 }

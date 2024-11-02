@@ -108,4 +108,26 @@ func (p *PGConnector) GetWalletByUsername(ctx context.Context, username string) 
 	if err != nil {
 		return models.Wallet{}, err
 	}
+
+	return w, nil
+}
+
+// GetBalance returns current wallet balance
+func (p *PGConnector) GetBalance(ctx context.Context, u models.User) (models.Wallet, error) {
+	var w models.Wallet
+	r, err := p.PGConn.Query(ctx,
+		`SELECT wallets.balanceRUB, wallets.balanceUSD, wallets.balanceEUR
+		FROM wallets
+		JOIN (SELECT * FROM users where users.username = $1) as t1
+		    ON wallets.uuid = t1.wallet_id`, u.Username)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+
+	err = r.Scan(&w.Balance.RUB, &w.Balance.USD, &w.Balance.EUR)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+
+	return w, nil
 }
