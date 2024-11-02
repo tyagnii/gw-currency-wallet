@@ -16,7 +16,7 @@ var registerError = gin.H{"error": "Username or email already exists"}
 //	@Accept       json
 //	@Produce      json
 //	@Param
-//	@Success      201  {object}  http.StatusOK
+//	@Success      201  {object}  http.StatusCreated
 //	@Failure      400  {object}  http.StatusBadRequest
 //	@Router       /api/v1/register [post]
 func (h *Handler) Register(c *gin.Context) {
@@ -30,5 +30,5 @@ func (h *Handler) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User successfully registered"})
+	c.JSON(http.StatusCreated, gin.H{"message": "User successfully registered"})
 }
