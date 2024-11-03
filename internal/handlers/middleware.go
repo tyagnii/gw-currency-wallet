@@ -6,13 +6,16 @@ import (
 	"net/http"
 )
 
+// Auth middleware for gin router. Provides authentication mechanism via JWT
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		t := c.GetHeader("token")
 		if flag, _ := token.ParseToken(t); !flag {
-			c.JSON(http.StatusUnauthorized, gin.H{})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
+			return
 		}
+		c.Next()
 
 	}
 }

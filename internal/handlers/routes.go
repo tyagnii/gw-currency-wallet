@@ -19,22 +19,18 @@ func NewRouter() (*gin.Engine, error) {
 	// TODO: Replace default router with custom one
 	l := gin.Logger()
 	r := gin.Default()
+	r.POST("/api/v1/register", h.Register)
+	r.POST("/api/v1/login", h.Login)
 	r.Use(l)
 
 	// Create an authrization group of endpoints
 	// for and auth middleware
-	authGroup := r.Group("/api/v1/")
-	authGroup.Use(Auth())
-	{
-		r.GET("/api/v1/balance", h.GetBalance)
-		r.POST("/api/v1/wallet/deposit", h.Deposit)
-		r.POST("/api/v1/wallet/withdraw", h.Withdraw)
-		r.GET("/api/v1/exchange/rates", h.GetRates)
-		r.POST("/api/v1/exchange", h.Exchange)
-	}
-
-	r.POST("/api/v1/register", h.Register)
-	r.POST("/api/v1/login", h.Login)
+	authGroup := r.Group("/api/v1").Use(Auth())
+	authGroup.GET("/balance", h.GetBalance)
+	authGroup.POST("/wallet/deposit", h.Deposit)
+	authGroup.POST("/wallet/withdraw", h.Withdraw)
+	authGroup.GET("/exchange/rates", h.GetRates)
+	authGroup.POST("/exchange", h.Exchange)
 
 	return r, nil
 }
