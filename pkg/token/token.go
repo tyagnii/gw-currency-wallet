@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tyagnii/gw-currency-wallet/internal/models"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -17,11 +19,13 @@ type Claims struct {
 
 // Init package variables
 func init() {
-	// todo: read secret from configuration
-	Secret = "very secret string"
+	Secret = os.Getenv("JWT_SECRET")
 
-	// todo: read expiration time from configuration
-	ExpireTime = time.Hour * 24
+	v, err := strconv.Atoi(os.Getenv("JWT_EXPIRE_TIME"))
+	if err != nil {
+		panic(err)
+	}
+	ExpireTime = time.Duration(v) * time.Hour
 }
 
 // NewToken creates new JWT token for given user
