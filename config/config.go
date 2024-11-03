@@ -2,7 +2,9 @@
 package config
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
+	"os"
 )
 
 var ConnectionString string
@@ -13,5 +15,6 @@ func ReadConfig(cfg string) error {
 		return err
 	}
 
+	fmt.Println(os.Getenv("PGHOST"))
 	return nil
 }

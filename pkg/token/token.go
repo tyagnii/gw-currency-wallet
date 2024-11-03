@@ -1,7 +1,7 @@
+// TODO: MOve the package to the internal directory
 package token
 
 import (
-	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tyagnii/gw-currency-wallet/internal/models"
 	"os"
@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+// todo: generate secrerte string on the fly
+//
+//	create token structure
+//	make func token methods
 var Secret string
 var ExpireTime time.Duration
 
@@ -17,8 +21,8 @@ type Claims struct {
 	Username string
 }
 
-// Init package variables
-func init() {
+// LoadEnvironment loads environment variables
+func LoadEnvironment() {
 	Secret = os.Getenv("JWT_SECRET")
 
 	v, err := strconv.Atoi(os.Getenv("JWT_EXPIRE_TIME"))
@@ -48,25 +52,19 @@ func NewToken(user models.User) (string, error) {
 // ParseToken checks if provided token is valid and
 // return error if its not
 // or token structure if it is valid
-func ParseToken(tokenString string) (bool, error) {
+func ParseToken(tokenString string) (*jwt.Token, Claims, error) {
 	claims := &Claims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		return []byte(Secret), nil
 	})
-
-	// TODO: handle error separately from token checks
 	if err != nil {
-		return false, err
+		return nil, *claims, err
 	}
 
-	if !token.Valid {
-		return false, fmt.Errorf("invalid token")
-	}
-
-	return true, nil
+	return token, *claims, nil
 }
 
-func GetUsernameFromClaims(token *jwt.Token) (string, error) {
-	return token.Claims.(jwt.MapClaims)["username"].(string), nil
+func ValidateToken(token *jwt.Token) bool {
+	return token.Valid
 }
