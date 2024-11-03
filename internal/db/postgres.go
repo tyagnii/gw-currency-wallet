@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"github.com/jackc/pgx/v5"
 	"github.com/tyagnii/gw-currency-wallet/internal/models"
 )
@@ -115,6 +116,7 @@ func (p *PGConnector) GetWalletByUsername(ctx context.Context, username string) 
 // GetBalance returns current wallet balance
 func (p *PGConnector) GetBalance(ctx context.Context, u models.User) (models.Wallet, error) {
 	var w models.Wallet
+	
 	r, err := p.PGConn.Query(ctx,
 		`SELECT wallets.balanceRUB, wallets.balanceUSD, wallets.balanceEUR
 		FROM wallets
@@ -124,9 +126,10 @@ func (p *PGConnector) GetBalance(ctx context.Context, u models.User) (models.Wal
 		return models.Wallet{}, err
 	}
 
+	r.Next()
 	err = r.Scan(&w.Balance.RUB, &w.Balance.USD, &w.Balance.EUR)
 	if err != nil {
-		return models.Wallet{}, err
+		return models.Wallet{}, fmt.Errorf("erorr during scan rows to struct: %w", err)
 	}
 
 	return w, nil

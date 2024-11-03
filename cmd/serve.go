@@ -8,6 +8,7 @@ import (
 	"github.com/tyagnii/gw-currency-wallet/config"
 	"github.com/tyagnii/gw-currency-wallet/internal/db"
 	"github.com/tyagnii/gw-currency-wallet/internal/handlers"
+	"github.com/tyagnii/gw-currency-wallet/pkg/token"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -32,6 +33,9 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			os.Exit(1)
 		}
+
+		// LoadEnvironment for token package
+		token.LoadEnvironment()
 
 		r, err := handlers.NewRouter()
 		if err != nil {
