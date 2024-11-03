@@ -10,12 +10,19 @@ import (
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		t := c.GetHeader("token")
-		if flag, _ := token.ParseToken(t); !flag {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
+		t := c.GetHeader("Authorization")
+		parsedToken, claims, err := token.ParseToken(t)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		c.Next()
 
+		if !token.ValidateToken(parsedToken) {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.AddParam("username", claims.Username)
+		c.Next()
 	}
 }

@@ -25,7 +25,6 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	// TODO: generate token
 	jwtToken, err := token.NewToken(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

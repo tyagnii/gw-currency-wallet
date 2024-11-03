@@ -34,4 +34,10 @@ func (h *Handler) Deposit(c *gin.Context) {
 		w.Balance.RUB += dq.Amount
 	}
 
+	if err := h.dbconn.Deposit(c, w); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Account topped up successfully", "new_balance": w.Balance})
+
 }
