@@ -9,13 +9,14 @@ import (
 // Exchange one currency to another with provided amount
 //
 //	@Summary      Exchanger endpoint
-//	@Description  exchange one currency to anoter
+//	@Description  exchange one currency to another
 //	@Tags         exchange
+//	@Param 		 Authorization header string true "JWT token"
+//	@Param		  amount body models.ExchangeReq true "Exchange query in json format"
 //	@Accept       json
 //	@Produce      json
-//	@Param
-//	@Success      200  {object}  http.StatusOK
-//	@Failure      400  {object}  http.StatusBadRequest
+//	@Success      200
+//	@Failure      400
 //	@Router       /api/v1/exchange [post]
 func (h *Handler) Exchange(c *gin.Context) {
 	var exchange models.ExchangeReq

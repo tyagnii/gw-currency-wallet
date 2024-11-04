@@ -11,11 +11,11 @@ import (
 //	@Summary      Shows wallet balance
 //	@Description  shows user wallet balance
 //	@Tags         accounts, wallets
+//	@Param 		 Authorization header string true "JWT token"
 //	@Accept       json
 //	@Produce      json
-//	@Param
-//	@Success      200  {object}  http.StatusOK
-//	@Failure      400  {object}  http.StatusBadRequest
+//	@Success      200
+//	@Failure      400
 //	@Router       /api/v1/balance [get]
 func (h *Handler) GetBalance(c *gin.Context) {
 	var u = new(models.User)

@@ -116,7 +116,7 @@ func (p *PGConnector) GetWalletByUsername(ctx context.Context, username string) 
 // GetBalance returns current wallet balance
 func (p *PGConnector) GetBalance(ctx context.Context, u models.User) (models.Wallet, error) {
 	var w models.Wallet
-	
+
 	r, err := p.PGConn.Query(ctx,
 		`SELECT wallets.balanceRUB, wallets.balanceUSD, wallets.balanceEUR
 		FROM wallets

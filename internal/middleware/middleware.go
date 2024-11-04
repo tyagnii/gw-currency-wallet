@@ -1,8 +1,8 @@
-package handlers
+package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tyagnii/gw-currency-wallet/pkg/token"
+	"github.com/tyagnii/gw-currency-wallet/internal/token"
 	"net/http"
 )
 
@@ -13,7 +13,7 @@ func Auth() gin.HandlerFunc {
 		t := c.GetHeader("Authorization")
 		parsedToken, claims, err := token.ParseToken(t)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 

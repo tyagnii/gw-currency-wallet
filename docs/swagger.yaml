@@ -1,0 +1,100 @@
+definitions:
+  models.DepositReq:
+    properties:
+      amount:
+        type: number
+      currency:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/balance:
+    get:
+      consumes:
+      - application/json
+      description: shows user wallet balance
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Shows wallet balance
+      tags:
+      - accounts
+      - wallets
+  /api/v1/exchange:
+    post:
+      consumes:
+      - application/json
+      description: exchange one currency to anoter
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Exchanger endpoint
+      tags:
+      - exchange
+  /api/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: authorize users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Authorize existing user
+      tags:
+      - accounts
+  /api/v1/register:
+    post:
+      consumes:
+      - application/json
+      description: register new users
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+      summary: Register user
+      tags:
+      - accounts
+  /api/v1/wallet/deposit:
+    post:
+      consumes:
+      - application/json
+      description: deposit user wallet
+      parameters:
+      - description: JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Deposit query in json format
+        in: body
+        name: amount
+        required: true
+        schema:
+          $ref: '#/definitions/models.DepositReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Deposit balance
+      tags:
+      - accounts
+swagger: "2.0"

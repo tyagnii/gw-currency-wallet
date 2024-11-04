@@ -5,13 +5,17 @@ package cmd
 
 import (
 	"fmt"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/tyagnii/gw-currency-wallet/config"
 	"github.com/tyagnii/gw-currency-wallet/internal/db"
 	"github.com/tyagnii/gw-currency-wallet/internal/handlers"
-	"github.com/tyagnii/gw-currency-wallet/pkg/token"
+	"github.com/tyagnii/gw-currency-wallet/internal/token"
 	"os"
 
 	"github.com/spf13/cobra"
+
+	_ "github.com/tyagnii/gw-currency-wallet/docs"
 )
 
 // serveCmd represents the serve command
@@ -44,6 +48,11 @@ to quickly create a Cobra application.`,
 			fmt.Println(err)
 		}
 
+		// swagger
+
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+		// run server
 		err = r.Run()
 		if err != nil {
 			fmt.Println(err)

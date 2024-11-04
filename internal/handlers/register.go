@@ -15,9 +15,8 @@ var registerError = gin.H{"error": "Username or email already exists"}
 //	@Tags         accounts
 //	@Accept       json
 //	@Produce      json
-//	@Param
-//	@Success      201  {object}  http.StatusCreated
-//	@Failure      400  {object}  http.StatusBadRequest
+//	@Success      201
+//	@Failure      400
 //	@Router       /api/v1/register [post]
 func (h *Handler) Register(c *gin.Context) {
 	var u models.User

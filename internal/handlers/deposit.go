@@ -8,15 +8,16 @@ import (
 
 // Deposit wallet with provided amount
 //
-//	@Summary      Deposit balance
-//	@Description  deposit user wallet
-//	@Tags         accounts
-//	@Accept       json
-//	@Produce      json
-//	@Param
-//	@Success      200  {object}  http.StatusOK
-//	@Failure      400  {object}  http.StatusBadRequest
-//	@Router       /api/v1/wallet/deposit [post]
+// @Summary      Deposit balance
+// @Description  deposit user wallet
+// @Tags         accounts
+// @Param 		 Authorization header string true "JWT token"
+// @Param		 amount body models.DepositReq true "Deposit query in json format"
+// @Accept       json
+// @Produce      json
+// @Success      200
+// @Failure      400
+// @Router       /api/v1/wallet/deposit [post]
 func (h *Handler) Deposit(c *gin.Context) {
 	var dq models.DepositReq
 	var w models.Wallet

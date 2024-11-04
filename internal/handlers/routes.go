@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/tyagnii/gw-currency-wallet/internal/middleware"
 )
 
 // NewRouter create an instance of gin Router
@@ -25,7 +26,7 @@ func NewRouter() (*gin.Engine, error) {
 
 	// Create an authrization group of endpoints
 	// for and auth middleware
-	authGroup := r.Group("/api/v1").Use(Auth())
+	authGroup := r.Group("/api/v1").Use(middleware.Auth())
 	authGroup.GET("/balance", h.GetBalance)
 	authGroup.POST("/wallet/deposit", h.Deposit)
 	authGroup.POST("/wallet/withdraw", h.Withdraw)
