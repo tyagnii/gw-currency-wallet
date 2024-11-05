@@ -15,6 +15,13 @@ definitions:
       to_currency:
         type: string
     type: object
+  models.WithdrawReq:
+    properties:
+      amount:
+        type: number
+      currency:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -122,6 +129,33 @@ paths:
         "400":
           description: Bad Request
       summary: Deposit balance
+      tags:
+      - accounts
+  /api/v1/wallet/withdraw:
+    post:
+      consumes:
+      - application/json
+      description: withdraw provided amount from user wallet
+      parameters:
+      - description: JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Withdraw query in json format
+        in: body
+        name: amount
+        required: true
+        schema:
+          $ref: '#/definitions/models.WithdrawReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Withdraw amount
       tags:
       - accounts
 swagger: "2.0"

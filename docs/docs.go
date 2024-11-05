@@ -175,6 +175,47 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/wallet/withdraw": {
+            "post": {
+                "description": "withdraw provided amount from user wallet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "Withdraw amount",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Withdraw query in json format",
+                        "name": "amount",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.WithdrawReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -199,6 +240,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "to_currency": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.WithdrawReq": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "currency": {
                     "type": "string"
                 }
             }
