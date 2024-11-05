@@ -20,12 +20,24 @@ import (
 //	@Router       /api/v1/exchange [post]
 func (h *Handler) Exchange(c *gin.Context) {
 	var exchange models.ExchangeReq
-	//var wallet models.Wallet
+	// var wallet models.Wallet
+	var user models.User
+
+	user.Username = c.Param("username")
 
 	if err := c.BindJSON(&exchange); err != nil {
 		h.sLogger.Errorf("Could not bind JSON: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	// Looking for rates in cache
+	rate, yes := h.Cache.Get("rate")
+	if yes {
+		h.sLogger.Debugf("rate fetched from cache: %v", rate)
+
+	} else {
+		h.sLogger.Debugf("could not get rate from cache")
 	}
 
 	// TODO: get rates for exchange

@@ -1,31 +1,11 @@
 package handlers
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/tyagnii/gw-currency-wallet/internal/models"
 	"net/http"
 )
-
-func withdrawCheck(wallet models.Wallet, amount models.WithdrawReq) (bool, error) {
-	switch amount.Currency {
-	case "USD":
-		if wallet.Balance.USD < amount.Amount {
-			return false, errors.New("insufficient balance")
-		}
-	case "EUR":
-		if wallet.Balance.EUR < amount.Amount {
-			return false, errors.New("insufficient balance")
-		}
-	case "RUB":
-		if wallet.Balance.RUB < amount.Amount {
-			return false, errors.New("insufficient balance")
-		}
-	}
-
-	return true, nil
-}
 
 // Withdraw wallet with provided amount
 // @Summary      Withdraw amount

@@ -13,10 +13,6 @@ type Currency struct {
 	EUR float32 `json:"EUR"`
 }
 
-type Rates struct {
-	Rates Currency `json:"rates"`
-}
-
 type Wallet struct {
 	ID      int
 	UUID    string
@@ -37,3 +33,6 @@ type ExchangeReq struct {
 
 // WithdrawReq is an alias for Withdrawal request
 type WithdrawReq DepositReq
+
+// Rates is an alias for rates requests
+type Rates Currency

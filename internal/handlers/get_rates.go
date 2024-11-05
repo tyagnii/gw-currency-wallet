@@ -23,9 +23,9 @@ func (h *Handler) GetRates(c *gin.Context) {
 	}
 
 	mapRates := eResp.GetRates()
-	resp.Rates.USD = mapRates["USD"]
-	resp.Rates.EUR = mapRates["EUR"]
-	resp.Rates.RUB = mapRates["RUB"]
+	resp.USD = mapRates["USD"]
+	resp.EUR = mapRates["EUR"]
+	resp.RUB = mapRates["RUB"]
 
 	c.JSON(http.StatusOK, resp)
 }

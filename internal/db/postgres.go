@@ -20,6 +20,12 @@ func NewPGConnector(ctx context.Context, connectionString string) (*PGConnector,
 	return &PGConnector{PGConn: conn, ctx: ctx}, nil
 }
 
+func (p *PGConnector) Exchange(ctx context.Context, w models.Wallet) (models.Wallet, error) {
+	//TODO implement me
+
+	panic("implement me")
+}
+
 func (p *PGConnector) CreateUser(ctx context.Context, user models.User) error {
 	UUID, err := generateWalletID()
 	if err != nil {
