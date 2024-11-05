@@ -3,6 +3,8 @@ package db
 import (
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
+	"os"
+	"strings"
 	"time"
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -10,14 +12,36 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const migrationsPath string = "file://internal/migrations"
+
+func buildConnString() string {
+	builder := strings.Builder{}
+	builder.WriteString("postgres://")
+	builder.WriteString(os.Getenv("PGUSER"))
+	builder.WriteString(":")
+	builder.WriteString(os.Getenv("PGPASSWORD"))
+	builder.WriteString("@")
+	builder.WriteString(os.Getenv("PGHOST"))
+	builder.WriteString(":")
+	builder.WriteString(os.Getenv("PGPORT"))
+	builder.WriteString("/")
+	builder.WriteString(os.Getenv("PGDATABASE"))
+	builder.WriteString("?sslmode=")
+	builder.WriteString(os.Getenv("PGSSLMODE"))
+
+	return builder.String()
+}
+
 func InitSchema() {
 	// TODO: refactor connection to DB
-	// 		read connection string from config
 	var m *migrate.Migrate
 	var err error
+
+	connectionString := buildConnString()
+
 	for {
-		m, err = migrate.New("file://internal/db/migrations",
-			"postgres://postgres:password@db:5432/postgres?sslmode=disable")
+		m, err = migrate.New(migrationsPath,
+			connectionString)
 		if err != nil {
 			fmt.Println(err)
 			time.Sleep(10 * time.Second)
