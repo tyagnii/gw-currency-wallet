@@ -8,3 +8,8 @@ build:
 swagger-doc:
 	@ swag init
 
+# Generate mocks fo db
+.PHONY: gen-mock
+gen-mock:
+	@ mockgen -source internal/db/db.go -destination gen/mock/mock.go
+
