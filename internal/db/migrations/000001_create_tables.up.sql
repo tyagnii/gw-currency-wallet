@@ -5,9 +5,9 @@ CREATE TABLE wallets
 (
     id         INT GENERATED ALWAYS AS IDENTITY,
     uuid       varchar NOT NULL UNIQUE,
-    balanceRUB float DEFAULT 0,
-    balanceUSD float DEFAULT 0,
-    balanceEUR float DEFAULT 0,
+    balanceRUB float DEFAULT 0 CHECK ( balanceEUR >= 0 ),
+    balanceUSD float DEFAULT 0 CHECK ( balanceUSD >= 0 ),
+    balanceEUR float DEFAULT 0 CHECK ( balanceEUR >= 0 ),
     PRIMARY KEY(id)
 );
 
