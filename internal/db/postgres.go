@@ -20,8 +20,26 @@ func NewPGConnector(ctx context.Context, connectionString string) (*PGConnector,
 	return &PGConnector{PGConn: conn, ctx: ctx}, nil
 }
 
-func (p *PGConnector) Exchange(ctx context.Context, w models.Wallet) (models.Wallet, error) {
+func (p *PGConnector) Exchange(ctx context.Context, w models.Wallet, r models.ExchangeReq) (models.Wallet, error) {
 	//TODO implement me
+	tx, err := p.PGConn.Begin(ctx)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+
+	rows, err := tx.Query(
+		ctx,
+		`SELECT * FROM wallets WHERE uuid = $1`,
+		w.UUID)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+	rows.Next()
+	err = rows.Scan(&w)
+	if err != nil {
+		_ = tx.Rollback(ctx)
+		return models.Wallet{}, err
+	}
 
 	panic("implement me")
 }

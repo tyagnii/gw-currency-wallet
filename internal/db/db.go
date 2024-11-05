@@ -12,5 +12,5 @@ type DBConnector interface {
 	Deposit(ctx context.Context, w models.Wallet) error
 	Withdraw(ctx context.Context, w models.Wallet) error
 	GetBalance(ctx context.Context, u models.User) (models.Wallet, error)
-	Exchange(ctx context.Context, w models.Wallet) (models.Wallet, error)
+	Exchange(ctx context.Context, w models.Wallet, r models.ExchangeReq) (models.Wallet, error)
 }

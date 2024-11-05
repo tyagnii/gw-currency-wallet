@@ -26,9 +26,10 @@ type DepositReq struct {
 }
 
 type ExchangeReq struct {
-	FromCurrency string  `json:"from_currency"`
-	ToCurrency   string  `json:"to_currency"`
-	Amount       float32 `json:"amount"`
+	FromCurrency string   `json:"from_currency"`
+	ToCurrency   string   `json:"to_currency"`
+	Amount       float32  `json:"amount"`
+	Rate         Currency `json:"rate"`
 }
 
 // WithdrawReq is an alias for Withdrawal request
