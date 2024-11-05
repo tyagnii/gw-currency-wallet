@@ -21,13 +21,16 @@ var registerError = gin.H{"error": "Username or email already exists"}
 func (h *Handler) Register(c *gin.Context) {
 	var u models.User
 	if err := c.BindJSON(&u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		h.sLogger.Errorf("Register error: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if err := h.dbconn.CreateUser(c, u); err != nil {
-		c.JSON(http.StatusBadRequest, registerError)
+		h.sLogger.Errorf("Register error: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, registerError)
 		return
 	}
 
+	h.sLogger.Debugf("Register user successful: %v", u)
 	c.JSON(http.StatusCreated, gin.H{"message": "User successfully registered"})
 }

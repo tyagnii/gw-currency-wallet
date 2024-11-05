@@ -23,7 +23,9 @@ func (h *Handler) Deposit(c *gin.Context) {
 	var w models.Wallet
 
 	if err := c.ShouldBindJSON(&dq); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		h.sLogger.Errorf("Could not bind JSON: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	switch dq.Currency {
@@ -34,9 +36,13 @@ func (h *Handler) Deposit(c *gin.Context) {
 	case "RUB":
 		w.Balance.RUB += dq.Amount
 	}
+	// todo: warn! sensetive data in logs
+	h.sLogger.Debugf("Wallet balance: %v", w.Balance)
 
 	if err := h.dbconn.Deposit(c, w); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		h.sLogger.Errorf("Could not deposit: %v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Account topped up successfully", "new_balance": w.Balance})

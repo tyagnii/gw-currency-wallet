@@ -10,6 +10,7 @@ import (
 	"github.com/tyagnii/gw-currency-wallet/config"
 	"github.com/tyagnii/gw-currency-wallet/internal/db"
 	"github.com/tyagnii/gw-currency-wallet/internal/handlers"
+	"github.com/tyagnii/gw-currency-wallet/internal/logger"
 	"github.com/tyagnii/gw-currency-wallet/internal/token"
 	"os"
 
@@ -30,33 +31,41 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("serve called")
-		db.InitSchema()
 
-		// read config.env
-		err := config.ReadConfig("config.env")
+		// Init logger
+		sLogger, err := logger.NewSugaredLogger()
 		if err != nil {
+			panic(err)
+		}
+
+		// Read config.env
+		err = config.ReadConfig("config.env")
+		if err != nil {
+			sLogger.DPanicf("Cannot read configuration file: %v", err)
+			os.Exit(1)
+		}
+
+		// Init database schema
+		if err := db.InitSchema(); err != nil {
+			sLogger.DPanicf("Cannot init schema: %v", err)
 			os.Exit(1)
 		}
 
 		// LoadEnvironment for token package
 		token.LoadEnvironment()
 
-		r, err := handlers.NewRouter()
+		// Init restapi routers
+		r, err := handlers.NewRouter(sLogger)
 		if err != nil {
-			// todo: skip db connection error
-			// 		but panic on the other errors
-			fmt.Println(err)
+			sLogger.DPanicf("Cannot create router: %v", err)
+			os.Exit(1)
 		}
 
-		// swagger
-
+		// Run swagger
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-		// run server
-		err = r.Run()
-		if err != nil {
-			fmt.Println(err)
-		}
+		// Run server
+		sLogger.Fatal(r.Run())
 	},
 }
 

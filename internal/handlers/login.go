@@ -20,15 +20,18 @@ import (
 func (h *Handler) Login(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		h.sLogger.Errorf("Login error: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	jwtToken, err := token.NewToken(user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		h.sLogger.Errorf("Login error: %v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
+	h.sLogger.Debugf("Login success")
 	c.JSON(http.StatusOK, gin.H{"token": jwtToken})
 }

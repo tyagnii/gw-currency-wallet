@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	"os"
 	"strings"
@@ -12,7 +11,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const migrationsPath string = "file://internal/migrations"
+const migrationsPath string = "file://internal/db/migrations"
 
 func buildConnString() string {
 	builder := strings.Builder{}
@@ -32,7 +31,7 @@ func buildConnString() string {
 	return builder.String()
 }
 
-func InitSchema() {
+func InitSchema() error {
 	// TODO: refactor connection to DB
 	var m *migrate.Migrate
 	var err error
@@ -40,10 +39,9 @@ func InitSchema() {
 	connectionString := buildConnString()
 
 	for {
-		m, err = migrate.New(migrationsPath,
-			connectionString)
+		m, err = migrate.New(migrationsPath, connectionString)
 		if err != nil {
-			fmt.Println(err)
+			return err
 			time.Sleep(10 * time.Second)
 		} else {
 			break
@@ -52,6 +50,8 @@ func InitSchema() {
 
 	err = m.Up()
 	if err != nil && err != migrate.ErrNoChange {
-		fmt.Println(err)
+		return err
 	}
+
+	return nil
 }

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/tyagnii/gw-currency-wallet/internal/models"
 	"net/http"
@@ -46,32 +47,38 @@ func (h *Handler) Withdraw(c *gin.Context) {
 
 	wallet, err := h.dbconn.GetBalance(c, user)
 	if err != nil {
+		h.sLogger.Errorf("Withdraw error: %v", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	err = c.BindJSON(&amount)
 	if err != nil {
+		h.sLogger.Errorf("Withdraw error: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	yes, err := withdrawCheck(wallet, amount)
 	if err != nil {
+		h.sLogger.Errorf("Withdraw error: %v", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	if !yes {
+		h.sLogger.Errorf("Withdraw error: %v", fmt.Errorf("insufficient balance"))
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "insufficient balance"})
 		return
 	}
 
 	err = h.dbconn.Withdraw(c, wallet)
 	if err != nil {
+		h.sLogger.Errorf("Withdraw error: %v", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
+	h.sLogger.Infof("Withdraw success")
 	c.JSON(http.StatusOK, wallet)
 }

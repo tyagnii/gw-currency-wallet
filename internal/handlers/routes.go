@@ -4,25 +4,25 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/tyagnii/gw-currency-wallet/internal/middleware"
+	"go.uber.org/zap"
 )
 
 // NewRouter create an instance of gin Router
-func NewRouter() (*gin.Engine, error) {
+func NewRouter(sLogger *zap.SugaredLogger) (*gin.Engine, error) {
 	// Root context
 	ctx := context.Background()
 
 	// Init handlers
-	h, err := NewHandler(ctx)
+	h, err := NewHandler(ctx, sLogger)
 	if err != nil {
+		sLogger.Errorf("Could not initialize handler: %v", err)
 		return nil, err
 	}
 
 	// TODO: Replace default router with custom one
-	l := gin.Logger()
 	r := gin.Default()
 	r.POST("/api/v1/register", h.Register)
 	r.POST("/api/v1/login", h.Login)
-	r.Use(l)
 
 	// Create an authrization group of endpoints
 	// for and auth middleware
@@ -33,5 +33,6 @@ func NewRouter() (*gin.Engine, error) {
 	authGroup.GET("/exchange/rates", h.GetRates)
 	authGroup.POST("/exchange", h.Exchange)
 
+	sLogger.Debugf("Routes initialized")
 	return r, nil
 }

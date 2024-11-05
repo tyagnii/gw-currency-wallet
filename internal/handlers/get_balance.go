@@ -24,7 +24,9 @@ func (h *Handler) GetBalance(c *gin.Context) {
 
 	w, err := h.dbconn.GetBalance(c, *u)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		h.sLogger.Errorf("Error getting balance: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, w)

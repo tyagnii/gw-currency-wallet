@@ -23,7 +23,9 @@ func (h *Handler) Exchange(c *gin.Context) {
 	//var wallet models.Wallet
 
 	if err := c.BindJSON(&exchange); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		h.sLogger.Errorf("Could not bind JSON: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// TODO: get rates for exchange
