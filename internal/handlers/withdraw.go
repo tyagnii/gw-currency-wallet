@@ -26,18 +26,17 @@ func withdrawCheck(wallet models.Wallet, amount models.WithdrawReq) (bool, error
 	return true, nil
 }
 
-// Deposit wallet with provided amount
-//
-// @Summary      Deposit balance
-// @Description  deposit user wallet
+// Withdraw wallet with provided amount
+// @Summary      Withdraw amount
+// @Description  withdraw provided amount from user wallet
 // @Tags         accounts
 // @Param 		 Authorization header string true "JWT token"
-// @Param		 amount body models.DepositReq true "Deposit query in json format"
+// @Param		 amount body models.WithdrawReq true "Withdraw query in json format"
 // @Accept       json
 // @Produce      json
 // @Success      200
 // @Failure      400
-// @Router       /api/v1/wallet/deposit [post]
+// @Router       /api/v1/wallet/withdraw [post]
 func (h *Handler) Withdraw(c *gin.Context) {
 	var user = models.User{}
 	var wallet = models.Wallet{}
