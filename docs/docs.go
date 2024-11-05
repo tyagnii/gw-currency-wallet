@@ -29,6 +29,15 @@ const docTemplate = `{
                     "wallets"
                 ],
                 "summary": "Shows wallet balance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -41,7 +50,7 @@ const docTemplate = `{
         },
         "/api/v1/exchange": {
             "post": {
-                "description": "exchange one currency to anoter",
+                "description": "exchange one currency to another",
                 "consumes": [
                     "application/json"
                 ],
@@ -52,6 +61,24 @@ const docTemplate = `{
                     "exchange"
                 ],
                 "summary": "Exchanger endpoint",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Exchange query in json format",
+                        "name": "amount",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ExchangeReq"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -158,6 +185,20 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "currency": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ExchangeReq": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "from_currency": {
+                    "type": "string"
+                },
+                "to_currency": {
                     "type": "string"
                 }
             }

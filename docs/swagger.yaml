@@ -6,6 +6,15 @@ definitions:
       currency:
         type: string
     type: object
+  models.ExchangeReq:
+    properties:
+      amount:
+        type: number
+      from_currency:
+        type: string
+      to_currency:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -14,6 +23,12 @@ paths:
       consumes:
       - application/json
       description: shows user wallet balance
+      parameters:
+      - description: JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -29,7 +44,19 @@ paths:
     post:
       consumes:
       - application/json
-      description: exchange one currency to anoter
+      description: exchange one currency to another
+      parameters:
+      - description: JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Exchange query in json format
+        in: body
+        name: amount
+        required: true
+        schema:
+          $ref: '#/definitions/models.ExchangeReq'
       produces:
       - application/json
       responses:

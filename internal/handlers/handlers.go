@@ -3,10 +3,12 @@ package handlers
 import (
 	"context"
 	"github.com/tyagnii/gw-currency-wallet/internal/db"
+	exchanger_client "github.com/tyagnii/gw-currency-wallet/pkg/exchanger-client"
 )
 
 type Handler struct {
-	dbconn db.DBConnector
+	dbconn  db.DBConnector
+	eClient exchanger_client.ExchangerClient
 }
 
 func NewHandler(c context.Context) (*Handler, error) {

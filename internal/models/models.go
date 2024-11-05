@@ -13,6 +13,10 @@ type Currency struct {
 	EUR float32 `json:"EUR"`
 }
 
+type Rates struct {
+	Rates Currency `json:"rates"`
+}
+
 type Wallet struct {
 	ID      int
 	UUID    string
@@ -31,6 +35,5 @@ type ExchangeReq struct {
 	Amount       float32 `json:"amount"`
 }
 
-type Rates struct {
-	Rates Currency `json:"rates"`
-}
+// WithdrawReq is an alias for Withdrawal request
+type WithdrawReq DepositReq

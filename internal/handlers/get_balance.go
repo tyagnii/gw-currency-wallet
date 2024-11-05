@@ -11,7 +11,7 @@ import (
 //	@Summary      Shows wallet balance
 //	@Description  shows user wallet balance
 //	@Tags         accounts, wallets
-//	@Param 		 Authorization header string true "JWT token"
+//	@Param 		  Authorization header string true "JWT token"
 //	@Accept       json
 //	@Produce      json
 //	@Success      200
