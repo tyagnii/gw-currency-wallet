@@ -62,5 +62,5 @@ func (h *Handler) Withdraw(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, wallet})
+	c.JSON(http.StatusOK, wallet)
 }
