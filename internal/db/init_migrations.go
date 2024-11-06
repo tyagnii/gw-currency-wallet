@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	"os"
 	"strings"
@@ -41,7 +42,7 @@ func InitSchema() error {
 	for {
 		m, err = migrate.New(migrationsPath, connectionString)
 		if err != nil {
-			return err
+			fmt.Println(err)
 			time.Sleep(10 * time.Second)
 		} else {
 			break
