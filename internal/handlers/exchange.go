@@ -19,13 +19,13 @@ import (
 //	@Failure      400
 //	@Router       /api/v1/exchange [post]
 func (h *Handler) Exchange(c *gin.Context) {
-	var exchange models.ExchangeReq
+	var exchangeReq models.ExchangeReq
 	// var wallet models.Wallet
 	var user models.User
 
 	user.Username = c.Param("username")
 
-	if err := c.BindJSON(&exchange); err != nil {
+	if err := c.BindJSON(&exchangeReq); err != nil {
 		h.sLogger.Errorf("Could not bind JSON: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -35,9 +35,10 @@ func (h *Handler) Exchange(c *gin.Context) {
 	rate, yes := h.Cache.Get("rate")
 	if yes {
 		h.sLogger.Debugf("rate fetched from cache: %v", rate)
-
+		exchangeReq.Rate = rate.(models.Currency)
 	} else {
-		h.sLogger.Debugf("could not get rate from cache")
+		h.sLogger.Debugf("could not get rate from cache"
+		h.e
 	}
 
 	// TODO: get rates for exchange
