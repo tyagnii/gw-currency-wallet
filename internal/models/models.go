@@ -8,9 +8,9 @@ type User struct {
 }
 
 type Currency struct {
-	USD float32 `json:"USD"`
-	RUB float32 `json:"RUB"`
-	EUR float32 `json:"EUR"`
+	USD float64 `json:"USD"`
+	RUB float64 `json:"RUB"`
+	EUR float64 `json:"EUR"`
 }
 
 type Wallet struct {
@@ -21,14 +21,14 @@ type Wallet struct {
 }
 
 type DepositReq struct {
-	Amount   float32 `json:"amount"`
+	Amount   float64 `json:"amount"`
 	Currency string  `json:"currency"`
 }
 
 type ExchangeReq struct {
 	FromCurrency string  `json:"from_currency"`
 	ToCurrency   string  `json:"to_currency"`
-	Amount       float32 `json:"amount"`
+	Amount       float64 `json:"amount"`
 	Rate         Currency
 }
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jackc/pgx/v5"
 	"github.com/tyagnii/gw-currency-wallet/internal/models"
+	"reflect"
 )
 
 type PGConnector struct {
@@ -21,29 +22,54 @@ func NewPGConnector(ctx context.Context, connectionString string) (*PGConnector,
 }
 
 func (p *PGConnector) Exchange(ctx context.Context, w models.Wallet, req models.ExchangeReq) (models.Wallet, error) {
-	//TODO implement me
+	// Experimental!
+	// Implement reflection identification of fields in case
+	// we have huge number of currencies
+	rFromBalance := reflect.ValueOf(w.Balance).Elem().FieldByName(req.FromCurrency)
+	rToBalance := reflect.ValueOf(w.Balance).Elem().FieldByName(req.ToCurrency)
+	rRateTo := reflect.ValueOf(req.Rate).Elem().FieldByName(req.ToCurrency)
+	rRateFrom := reflect.ValueOf(req.Rate).Elem().FieldByName(req.FromCurrency)
+
+	if rFromBalance.IsValid() && rToBalance.IsValid() {
+		rFromBalance.SetFloat(rFromBalance.Float() - req.Amount)
+		rToBalance.SetFloat(rToBalance.Float() + req.Amount*rRateTo.Float()*rRateFrom.Float())
+	}
+
+	// Start transaction
 	tx, err := p.PGConn.Begin(ctx)
 	if err != nil {
 		return models.Wallet{}, err
 	}
 
-	rows, err := tx.Query(
+	_, err = tx.Exec(
 		ctx,
-		`SELECT * FROM wallets WHERE uuid = $1`,
+		`UPDATE wallets
+			SET balanceRUB = $1,
+			SET balanceUSD = $2,
+			SET balanceEUR = $3
+			WHERE uuid = $4;`,
+		w.Balance.RUB,
+		w.Balance.USD,
+		w.Balance.EUR,
 		w.UUID)
 	if err != nil {
+		err = tx.Rollback(ctx)
+		if err != nil {
+			err = fmt.Errorf("failed to rollback transaction: %w", err)
+		}
 		return models.Wallet{}, err
 	}
 
-	rows.Next()
-	err = rows.Scan(&w)
+	err = tx.Commit(ctx)
 	if err != nil {
-		_ = tx.Rollback(ctx)
+		err = tx.Rollback(ctx)
+		if err != nil {
+			err = fmt.Errorf("failed to rollback transaction: %w", err)
+		}
 		return models.Wallet{}, err
 	}
-	req.ToCurrency
 
-	panic("implement me")
+	return w, nil
 }
 
 func (p *PGConnector) CreateUser(ctx context.Context, user models.User) error {
