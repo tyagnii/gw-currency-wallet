@@ -65,7 +65,7 @@ to quickly create a Cobra application.`,
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 		// Run server
-		sLogger.Fatal(r.Run())
+		r.Run()
 	},
 }
 
