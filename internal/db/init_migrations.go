@@ -1,8 +1,10 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
+	"go.uber.org/zap"
 	"os"
 	"strings"
 	"time"
@@ -32,21 +34,46 @@ func buildConnString() string {
 	return builder.String()
 }
 
-func InitSchema() error {
+func InitSchema(sLogger *zap.SugaredLogger) error {
 	// TODO: refactor connection to DB
+	// 		channel for errors
 	var m *migrate.Migrate
 	var err error
+	var timeout time.Duration
+
+	timeout, err = time.ParseDuration(os.Getenv("MIGRATE_TIMEOUT"))
+	if err != nil {
+		return err
+	}
 
 	connectionString := buildConnString()
 
-	for {
-		m, err = migrate.New(migrationsPath, connectionString)
-		if err != nil {
-			fmt.Println(err)
-			time.Sleep(10 * time.Second)
-		} else {
-			break
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	go func(ctx context.Context) {
+		for {
+			m, err = migrate.New(migrationsPath, connectionString)
+			if err != nil {
+				sLogger.Errorf("Could not connect to database: %s", err)
+			} else {
+				break
+			}
+			switch ctx.Err() {
+			case context.Canceled:
+				break
+			case context.DeadlineExceeded:
+				break
+			default:
+				time.Sleep(5 * time.Second)
+			}
 		}
+	}(ctx)
+
+	<-ctx.Done()
+
+	if m == nil {
+		return fmt.Errorf("could not connect to database")
 	}
 
 	err = m.Up()

@@ -46,7 +46,7 @@ to quickly create a Cobra application.`,
 		}
 
 		// Init database schema
-		if err := db.InitSchema(); err != nil {
+		if err := db.InitSchema(sLogger); err != nil {
 			sLogger.DPanicf("Cannot init schema: %v", err)
 			os.Exit(1)
 		}
@@ -65,7 +65,8 @@ to quickly create a Cobra application.`,
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 		// Run server
-		r.Run()
+		//
+		sLogger.Error(r.Run())
 	},
 }
 
