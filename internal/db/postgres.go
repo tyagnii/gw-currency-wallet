@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jackc/pgx/v5"
 	"github.com/tyagnii/gw-currency-wallet/internal/models"
+	"reflect"
 )
 
 type PGConnector struct {
@@ -20,10 +21,55 @@ func NewPGConnector(ctx context.Context, connectionString string) (*PGConnector,
 	return &PGConnector{PGConn: conn, ctx: ctx}, nil
 }
 
-func (p *PGConnector) Exchange(ctx context.Context, w models.Wallet) (models.Wallet, error) {
-	//TODO implement me
+func (p *PGConnector) Exchange(ctx context.Context, w models.Wallet, req models.ExchangeReq) (models.Wallet, error) {
+	// Experimental!
+	// Implement reflection identification of fields in case
+	// we have huge number of currencies
+	rFromBalance := reflect.ValueOf(w.Balance).Elem().FieldByName(req.FromCurrency)
+	rToBalance := reflect.ValueOf(w.Balance).Elem().FieldByName(req.ToCurrency)
+	rRateTo := reflect.ValueOf(req.Rate).Elem().FieldByName(req.ToCurrency)
+	rRateFrom := reflect.ValueOf(req.Rate).Elem().FieldByName(req.FromCurrency)
 
-	panic("implement me")
+	if rFromBalance.IsValid() && rToBalance.IsValid() {
+		rFromBalance.SetFloat(rFromBalance.Float() - req.Amount)
+		rToBalance.SetFloat(rToBalance.Float() + req.Amount*rRateTo.Float()*rRateFrom.Float())
+	}
+
+	// Start transaction
+	tx, err := p.PGConn.Begin(ctx)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+
+	_, err = tx.Exec(
+		ctx,
+		`UPDATE wallets
+			SET balanceRUB = $1,
+			SET balanceUSD = $2,
+			SET balanceEUR = $3
+			WHERE uuid = $4;`,
+		w.Balance.RUB,
+		w.Balance.USD,
+		w.Balance.EUR,
+		w.UUID)
+	if err != nil {
+		err = tx.Rollback(ctx)
+		if err != nil {
+			err = fmt.Errorf("failed to rollback transaction: %w", err)
+		}
+		return models.Wallet{}, err
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		err = tx.Rollback(ctx)
+		if err != nil {
+			err = fmt.Errorf("failed to rollback transaction: %w", err)
+		}
+		return models.Wallet{}, err
+	}
+
+	return w, nil
 }
 
 func (p *PGConnector) CreateUser(ctx context.Context, user models.User) error {

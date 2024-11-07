@@ -18,14 +18,14 @@ import (
 //	@Success      200
 //	@Failure      400
 //	@Router       /api/v1/exchange [post]
-func (h *Handler) Exchange(c *gin.Context) {
-	var exchange models.ExchangeReq
-	// var wallet models.Wallet
+	var exchangeReq models.ExchangeReq
+	var wallet models.Wallet
 	var user models.User
+	var err error
 
 	user.Username = c.Param("username")
 
-	if err := c.BindJSON(&exchange); err != nil {
+	if err := c.BindJSON(&exchangeReq); err != nil {
 		h.sLogger.Errorf("Could not bind JSON: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -36,12 +36,24 @@ func (h *Handler) Exchange(c *gin.Context) {
 	if yes {
 		h.sLogger.Debugf("rate fetched from cache: %v", rate)
 
+		exchangeReq.Rate = rate.(models.Currency)
 	} else {
-		h.sLogger.Debugf("could not get rate from cache")
+		h.sLogger.Debugf("Exchange: could not get rate from cache")
 	}
 
-	// TODO: get rates for exchange
-	// 		check balance before withdraw
-	// 		swithching between currencies ???
+	wallet, err = h.dbconn.GetWalletByUsername(c, user.Username)
+	if err != nil {
+		h.sLogger.Errorf("Exchange: Could not get user: %v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
+	wallet, err = h.dbconn.Exchange(c, wallet, exchangeReq)
+	if err != nil {
+		h.sLogger.Errorf("Exchange: Could not exchange: %v", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, wallet)
 }

@@ -2,7 +2,7 @@ package exchanger_client
 
 import (
 	"context"
-	exchanger "github.com/tyagnii/gw-exchanger/gen/exchanger/v1"
+	exchanger "github.com/tyagnii/gw-proto/gen/exchanger/v1"
 	"google.golang.org/grpc"
 	"os"
 )
