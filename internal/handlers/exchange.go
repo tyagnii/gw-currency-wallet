@@ -18,7 +18,6 @@ import (
 //	@Success      200
 //	@Failure      400
 //	@Router       /api/v1/exchange [post]
-func (h *Handler) Exchange(c *gin.Context) {
 	var exchangeReq models.ExchangeReq
 	var wallet models.Wallet
 	var user models.User
@@ -36,6 +35,7 @@ func (h *Handler) Exchange(c *gin.Context) {
 	rate, yes := h.Cache.Get("rate")
 	if yes {
 		h.sLogger.Debugf("rate fetched from cache: %v", rate)
+
 		exchangeReq.Rate = rate.(models.Currency)
 	} else {
 		h.sLogger.Debugf("Exchange: could not get rate from cache")
