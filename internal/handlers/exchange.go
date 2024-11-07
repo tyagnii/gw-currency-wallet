@@ -18,6 +18,7 @@ import (
 //	@Success      200
 //	@Failure      400
 //	@Router       /api/v1/exchange [post]
+func (h *Handler) Exchange(c *gin.Context) {
 	var exchangeReq models.ExchangeReq
 	var wallet models.Wallet
 	var user models.User
