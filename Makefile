@@ -1,7 +1,7 @@
 # Build binary
 .PHONY: build
 build:
-	@ go build -o ./bin/server ./main.go
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ./bin/server ./main.go
 
 # Generate swagger documentation
 .PHONY: swagger-doc
