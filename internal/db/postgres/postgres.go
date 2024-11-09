@@ -1,9 +1,10 @@
-package db
+package postgres
 
 import (
 	"context"
 	"fmt"
 	"github.com/jackc/pgx/v5"
+	"github.com/tyagnii/gw-currency-wallet/internal/db"
 	"github.com/tyagnii/gw-currency-wallet/internal/models"
 	"reflect"
 )
@@ -73,7 +74,7 @@ func (p *PGConnector) Exchange(ctx context.Context, w models.Wallet, req models.
 }
 
 func (p *PGConnector) CreateUser(ctx context.Context, user models.User) error {
-	UUID, err := generateWalletID()
+	UUID, err := db.GenerateWalletID()
 	if err != nil {
 		return err
 	}

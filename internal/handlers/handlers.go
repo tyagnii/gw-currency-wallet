@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"github.com/tyagnii/gw-currency-wallet/internal/db"
+	"github.com/tyagnii/gw-currency-wallet/internal/db/postgres"
 	"github.com/tyagnii/gw-currency-wallet/pkg/cache"
 
 	exchanger_client "github.com/tyagnii/gw-currency-wallet/pkg/exchanger-client"
@@ -17,7 +18,7 @@ type Handler struct {
 }
 
 func NewHandler(c context.Context, sLogger *zap.SugaredLogger) (*Handler, error) {
-	pg, err := db.NewPGConnector(c, "")
+	pg, err := postgres.NewPGConnector(c, "")
 	if err != nil {
 		return nil, err
 	}
