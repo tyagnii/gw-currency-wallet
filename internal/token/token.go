@@ -3,7 +3,7 @@ package token
 
 import (
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/tyagnii/gw-currency-wallet/internal/models"
+	"github.com/tyagnii/gw-currency-wallet/internal/db/models"
 	"os"
 	"strconv"
 	"time"

@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tyagnii/gw-currency-wallet/internal/models"
+	"github.com/tyagnii/gw-currency-wallet/internal/db/models"
 	"net/http"
 )
 

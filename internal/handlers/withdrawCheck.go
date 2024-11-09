@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/tyagnii/gw-currency-wallet/internal/models"
+	"github.com/tyagnii/gw-currency-wallet/internal/db/models"
 )
 
 // withdrawCheck checks if there is enough balance to withdraw

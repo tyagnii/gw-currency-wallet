@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"github.com/tyagnii/gw-currency-wallet/internal/models"
+	"github.com/tyagnii/gw-currency-wallet/internal/db/models"
 )
 
 type DBConnector interface {

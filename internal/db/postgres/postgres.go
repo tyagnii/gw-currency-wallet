@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/jackc/pgx/v5"
 	"github.com/tyagnii/gw-currency-wallet/internal/db"
-	"github.com/tyagnii/gw-currency-wallet/internal/models"
+	"github.com/tyagnii/gw-currency-wallet/internal/db/models"
 	"reflect"
 )
 
