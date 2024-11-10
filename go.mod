@@ -15,8 +15,7 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.4
-	github.com/tyagnii/gw-exchanger v0.0.0-20241104141844-2807cf0c834e
-	github.com/tyagnii/gw-proto v0.0.0-20241107165846-af9cf1dfa131
+	github.com/tyagnii/gw-proto v0.0.0-20241110131430-2083dbbebc4a
 	go.uber.org/mock v0.5.0
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.68.0

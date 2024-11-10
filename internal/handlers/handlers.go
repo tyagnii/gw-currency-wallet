@@ -5,14 +5,14 @@ import (
 	"github.com/tyagnii/gw-currency-wallet/internal/db"
 	"github.com/tyagnii/gw-currency-wallet/internal/db/postgres"
 	"github.com/tyagnii/gw-currency-wallet/pkg/cache"
+	"github.com/tyagnii/gw-proto/gen/exchanger/v1"
 
-	exchanger_client "github.com/tyagnii/gw-currency-wallet/pkg/exchanger-client"
 	"go.uber.org/zap"
 )
 
 type Handler struct {
 	dbconn  db.DBConnector
-	eClient exchanger_client.ExchangerClient
+	eClient exchanger.ExchangeServiceClient
 	sLogger *zap.SugaredLogger
 	*cache.Cache
 }
