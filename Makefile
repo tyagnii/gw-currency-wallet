@@ -11,5 +11,5 @@ swagger-doc:
 # Generate mocks fo db
 .PHONY: gen-mock
 gen-mock:
-	@ mockgen -source internal/db/db.go -destination gen/mock/mock.go
+	@ mockgen -source internal/db/db.go -destination gen/mock/mock_db/mock_db.go
 
