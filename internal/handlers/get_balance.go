@@ -21,6 +21,7 @@ func (h *Handler) GetBalance(c *gin.Context) {
 	var u = new(models.User)
 
 	u.Username = c.Param("username")
+	h.sLogger.Debugf("GetBalance: context: %v", c)
 
 	w, err := h.dbconn.GetBalance(c, *u)
 	if err != nil {
@@ -29,5 +30,6 @@ func (h *Handler) GetBalance(c *gin.Context) {
 		return
 	}
 
+	h.sLogger.Debugf("Get balance for wallet: %v", w)
 	c.JSON(http.StatusOK, w)
 }
