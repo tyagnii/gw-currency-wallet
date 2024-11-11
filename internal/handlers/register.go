@@ -25,6 +25,13 @@ func (h *Handler) Register(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	if u == (models.User{}) {
+		h.sLogger.Errorf("Register error: User is empty")
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "User is empty"})
+		return
+	}
+
 	if err := h.dbconn.CreateUser(c, u); err != nil {
 		h.sLogger.Errorf("Register error: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, registerError)
