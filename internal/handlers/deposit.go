@@ -27,6 +27,11 @@ func (h *Handler) Deposit(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if dq == (models.DepositReq{}) {
+		h.sLogger.Errorf("Empty request: %v", dq)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "empty request"})
+		return
+	}
 
 	switch dq.Currency {
 	case "USD":

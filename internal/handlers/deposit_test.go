@@ -23,24 +23,25 @@ func TestHandler_Deposit(t *testing.T) {
 	sLogger, _ := logger.NewSugaredLogger()
 	Cache, _ := cache.NewCache()
 
-	rw := httptest.NewRecorder()
-	ctx, _ := gin.CreateTestContext(rw)
-
+	type want struct {
+		code int
+		body []byte
+	}
 	type args struct {
-		hreq   models.DepositReq
-		dbreq  models.Wallet
-		reqUrl string
-		c      *gin.Context
+		hreq    models.DepositReq
+		dbreq   models.Wallet
+		dbCalls int
+		reqUrl  string
 	}
 	tests := []struct {
 		name string
 		args args
+		want want
 	}{
 		{
 			name: "test",
 
 			args: args{
-				c: ctx,
 				hreq: models.DepositReq{
 					Currency: "USD",
 					Amount:   1,
@@ -52,22 +53,47 @@ func TestHandler_Deposit(t *testing.T) {
 						EUR: 0,
 					},
 				},
-				reqUrl: "/api/v1/wallet/deposit",
+				reqUrl:  "/api/v1/wallet/deposit",
+				dbCalls: 1,
+			},
+			want: want{
+				code: http.StatusOK,
+			},
+		},
+		{
+			name: "test bad json",
+
+			args: args{
+				hreq: models.DepositReq{},
+				dbreq: models.Wallet{
+					Balance: models.Currency{
+						USD: 0,
+						RUB: 0,
+						EUR: 0,
+					},
+				},
+				reqUrl:  "/api/v1/wallet/deposit",
+				dbCalls: 0,
+			},
+			want: want{
+				code: http.StatusBadRequest,
 			},
 		},
 	}
 
-	h := &Handler{
-		dbconn:  mockDB,
-		eClient: mockClient,
-		sLogger: sLogger,
-		Cache:   Cache,
-	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			h := &Handler{
+				dbconn:  mockDB,
+				eClient: mockClient,
+				sLogger: sLogger,
+				Cache:   Cache,
+			}
 
-			tt.args.c.AddParam("username", "user")
+			rw := httptest.NewRecorder()
+			ctx, _ := gin.CreateTestContext(rw)
+
+			ctx.AddParam("username", "user")
 
 			b, _ := json.Marshal(tt.args.hreq)
 
@@ -75,13 +101,13 @@ func TestHandler_Deposit(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			tt.args.c.Request = req
+			ctx.Request = req
 
 			mockDB.EXPECT().
-				Deposit(tt.args.c, tt.args.dbreq).Return(nil).Times(1)
+				Deposit(ctx, tt.args.dbreq).Return(nil).Times(tt.args.dbCalls)
 
-			h.Deposit(tt.args.c)
-			assert.Equal(t, http.StatusOK, rw.Code)
+			h.Deposit(ctx)
+			assert.Equal(t, tt.want.code, rw.Code)
 		})
 	}
 }
